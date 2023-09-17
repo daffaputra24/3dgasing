@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gasing 3D</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://libs.zappar.com/zappar-aframe/2.0.0/zappar-aframe.js"></script>
+     <!-- Feather - Open source icons: https://feathericons.com -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Custom components -->
+    <script src="components.js"></script>
+
+
+</head>
+<body>
+    <a-scene>
+        <!-- Ask user for camera permissions, display some text if permission is denied -->
+        <a-entity zappar-permissions-ui id="permissions"></a-entity>
+        <!-- shows a full-page dialog that informs the user they're using an unsupported browser -->
+        <a-entity zappar-compatibility-ui id="compatibility"></a-entity>
+
+        
+
+        <!-- Add the Zappar Camera & allow user to click on elements by adding -->
+        <!-- a cursor component & identify the raycaster objects for better performance. -->
+        <a-camera zappar-camera cursor="rayOrigin: mouse; fuse: false;" raycaster="objects: .interactive" />
+
+        <!-- ROTATE THE SPINNING TOP -->
+        <a-mixin id="rotate" animation="property: rotation; loop: true; from: 0 0 0; to: 0 360 0; dur: 200; easing: linear;"></a-mixin>
+            
+        <!-- Setup our instant tracker and start it in placement mode so the user can -->
+        <!-- choose a location for the object -->
+        <a-entity zappar-instant="placement-mode: true" id="instant-tracker">
+
+            <!-- Include a videoGroup inside our instant tracker -->
+            <a-entity id="videoGrup" gltf-model="url(assets/spinning_top.glb)" class="interactive" position="0.1 0.2 1" scale="0.001 0.001 0.001" mixin="rotate"></a-entity>
+
+        </a-entity>
+
+        </a-entity>
+    </a-scene>
+    
+    <!-- Some UI for the user to tap to indicate they're happy with the placement -->
+    <div id="zappar-placement-ui" class="btn visible">Tap here to place the object</div>
+
+    <!-- Some UI for the user to tap to indicate they want to manipulate the placement -->
+    <div id="zappar-replacement-ui" class="btn hidden"><i data-feather="move"></i></div>
+
+
+
+    <script>
+        // Assign variables to the UI elements
+        const placementUI = document.getElementById("zappar-placement-ui");
+        const replacementUI = document.getElementById("zappar-replacement-ui");
+
+        // Assign a variable to the instant tracker group
+        const instantGroup = document.getElementById("instant-tracker");
+
+        // When the user taps on the placement UI
+        placementUI.addEventListener("click", function() {
+            // Set placement mode to false
+            instantGroup.setAttribute("zappar-instant", "placement-mode: false");
+
+            // Hide the placement UI
+            placementUI.classList.remove("visible");
+            placementUI.classList.add("hidden");
+            // Show the placement UI
+            replacementUI.classList.remove("hidden");
+            replacementUI.classList.add("visible");
+        });
+
+        // When the user taps on the replacement UI
+        replacementUI.addEventListener("click", function() {
+            // Set placement mode to true
+            instantGroup.setAttribute("zappar-instant", "placement-mode: true");
+
+            // Hide the replacement UI
+            replacementUI.classList.remove("visible");
+            replacementUI.classList.add("hidden");
+            // Show the placement UI
+            placementUI.classList.remove("hidden");
+            placementUI.classList.add("visible");
+        });
+
+        // Update our feather icons
+        feather.replace();
+
+    </script>
+</body>
+</html>
